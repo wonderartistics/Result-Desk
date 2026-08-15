@@ -1,0 +1,73 @@
+name: result_desk
+description: "Result Desk — universal board gazette result search, by Taimoor Hassan."
+publish_to: 'none'
+
+# pubspec version is Flutter/Play Store's own version+buildNumber.
+# The human-facing branded version (THC.RD.260816.01) lives in lib/utils/app_info.dart
+# and is shown in-app (About screen + footer), since Play/pubspec versions must be numeric.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # PDF text extraction with per-word/per-line coordinates — needed for the
+  # coordinate-aware gazette table parser. Free community license from Syncfusion.
+  syncfusion_flutter_pdf: ^26.2.14
+
+  # Native file/document picker so the user can pick a gazette PDF from device storage.
+  file_picker: ^8.1.2
+
+  # Local persistent storage for parsed gazette datasets (so an uploaded gazette
+  # survives app restarts instead of glitching / disappearing).
+  path_provider: ^2.1.4
+  shared_preferences: ^2.3.2
+
+  # State management — simple, no boilerplate, fine for this app's size.
+  provider: ^6.1.2
+
+  # Nice monospace font for roll numbers / dates, matches the ledger aesthetic.
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+  # Generates all Android/iOS launcher icon sizes (incl. adaptive icon) from
+  # one source image. Run: flutter pub run flutter_launcher_icons
+  flutter_launcher_icons: ^0.14.1
+
+  # Generates a native splash screen (shown instantly at cold start, before
+  # Flutter/Dart even boots) from one source image.
+  # Run: flutter pub run flutter_native_splash:create
+  flutter_native_splash: ^2.4.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/data/bundled_gazette.json
+    - assets/data/bundled_gazette_meta.json
+    - assets/icon/app_icon.png
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#0B1F3A"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#0B1F3A"
+  image: "assets/icon/splash_logo.png"
+  color_dark: "#0B1F3A"
+  image_dark: "assets/icon/splash_logo.png"
+  android_12:
+    color: "#0B1F3A"
+    image: "assets/icon/splash_logo_android12.png"
+    icon_background_color: "#0B1F3A"

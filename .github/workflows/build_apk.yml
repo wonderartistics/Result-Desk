@@ -1,0 +1,56 @@
+name: Build Result Desk APK
+
+# Runs entirely on GitHub's servers — you don't need Android Studio or the
+# Android SDK on your own PC. Just push your code with Git Bash and this
+# builds the APK for you, then attaches it to the workflow run (and to a
+# GitHub Release when you push a version tag).
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*" ]
+  workflow_dispatch: {}   # lets you click "Run workflow" manually on GitHub too
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java (required by Gradle/Android build)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate launcher icons
+        run: flutter pub run flutter_launcher_icons
+
+      - name: Generate native splash screen
+        run: flutter pub run flutter_native_splash:create
+
+      - name: Analyze (non-blocking, surfaces warnings in the log)
+        run: flutter analyze || true
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-desk-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Attach APK to GitHub Release (only on version tags)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/app-release.apk
